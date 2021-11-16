@@ -70,11 +70,24 @@ const loginUser = (req, res) => {
 
 const logoutUser = (req, res) => {
   res.cookie("jwt", "", { maxAge: -1 });
-  res.redirect("/");
+  res.json({ message: "You have been logged out" });
+};
+
+const getUserProfile = (req, res) => {
+  return res.json({ message: "This is the user profile" });
+};
+
+const changeUserPassword = (req, res) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  const userId = req.user._id;
+  console.log(userId);
+  return res.json({ message: "Wohoo bro" });
 };
 
 module.exports = {
   createUser,
   loginUser,
   logoutUser,
+  getUserProfile,
+  changeUserPassword,
 };
