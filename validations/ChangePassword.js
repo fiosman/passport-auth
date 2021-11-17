@@ -16,15 +16,12 @@ module.exports = function validatePasswordInput(data) {
     errors.push("Password field is required");
   }
 
-  if (
-    !Validator.isLength(data.password1, { min: 8, max: undefined }) ||
-    !Validator.isLength(data.password2, { min: 8, max: undefined })
-  ) {
-    errors.push("Password must be at least 8 characters long");
-  }
-
   if (!Validator.equals(data.password1, data.password2)) {
     errors.push("The passwords you have entered do not match");
+  }
+
+  if (!Validator.isStrongPassword(data.password1) || !Validator.isStrongPassword(data.password2)) {
+    errors.push("Your password must meet the requirements below!"); //min length 8, minLowerCase 1, minUpperCase 1, minNumbers: 1, minSymbols: 1
   }
 
   return {
