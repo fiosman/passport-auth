@@ -8,6 +8,10 @@ const {
   changeUserPassword,
 } = require("../controllers/userController");
 const passport = require("passport");
+const {
+  resetPasswordRequestController,
+  resetPasswordController,
+} = require("../controllers/UserController");
 require("../../services/Passport")(passport);
 
 router.post("/register", createUser);
@@ -19,4 +23,6 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   changeUserPassword
 );
+router.get("/reset_password", resetPasswordRequestController);
+router.get("/confirm_reset_password", resetPasswordController);
 module.exports = router;

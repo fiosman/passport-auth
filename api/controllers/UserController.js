@@ -4,6 +4,8 @@ const validateLoginInput = require("../../validations/Login");
 const validatePasswordInput = require("../../validations/ChangePassword");
 const jwtUtil = require("../../services/Jwt");
 const bcrypt = require("bcryptjs");
+const requestPasswordReset = require("../../services/PasswordReset").requestPasswordReset;
+const resetPassword = require("../../services/PasswordReset").resetPassword;
 
 const createUser = async (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
@@ -109,10 +111,26 @@ const changeUserPassword = async (req, res) => {
   });
 };
 
+const resetPasswordRequestController = async (req, res, next) => {
+  const requestPasswordResetService = await requestPasswordReset(req.body.email);
+  return res.json(requestPasswordResetService);
+};
+
+const resetPasswordController = async (req, res, next) => {
+  const resetPasswordService = await resetPassword(
+    req.body.userId,
+    req.body.token,
+    req.body.password
+  );
+  return res.json(resetPasswordService);
+};
+
 module.exports = {
   createUser,
   loginUser,
   logoutUser,
   getUserProfile,
   changeUserPassword,
+  resetPasswordRequestController,
+  resetPasswordController,
 };
