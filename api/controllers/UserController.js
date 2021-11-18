@@ -117,6 +117,11 @@ const resetPasswordRequestController = async (req, res, next) => {
 };
 
 const resetPasswordController = async (req, res, next) => {
+  //need to implement password validation here
+  // const { errors, isValid } = validatePasswordInput(req.body);
+  // if (!isValid) {
+  //   return res.status(400).json({ errors: errors });
+  // }
   const resetPasswordService = await resetPassword(
     req.body.userId,
     req.body.token,
