@@ -4,16 +4,15 @@ const fs = require("fs");
 const path = require("path");
 
 const sendEmail = async (email, subject, payload, template) => {
-  let testAccount = await nodemailer.createTestAccount();
+  // let testAccount = await nodemailer.createTestAccount();
   try {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
-      secure: false,
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass, // naturally, replace both with your real credentials or an application-specific password
+        user: "nick.mayer96@ethereal.email",
+        pass: "QRkkwMdeeV6RHzD7Jj", // naturally, replace both with your real credentials or an application-specific password
       },
     });
 
@@ -21,7 +20,7 @@ const sendEmail = async (email, subject, payload, template) => {
     const compiledTemplate = handlebars.compile(source);
     const options = () => {
       return {
-        from: process.env.FROM_EMAIL,
+        from: "nick.mayer96@ethereal.email",
         to: email,
         subject: subject,
         html: compiledTemplate(payload),
@@ -33,6 +32,7 @@ const sendEmail = async (email, subject, payload, template) => {
       if (error) {
         return error;
       } else {
+        console.log(info);
         return res.status(200).json({
           success: true,
         });
