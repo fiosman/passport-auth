@@ -25,7 +25,7 @@ const requestPasswordReset = async (email) => {
     user.email,
     "Password Reset Request",
     { name: user.email, link: link },
-    "./templates/requestResetPassword.handlebars"
+    "../templates/requestResetPassword.handlebars"
   );
   return link;
 };
@@ -48,7 +48,7 @@ const resetPassword = async (userId, token, password) => {
     {
       name: user.email,
     },
-    "./templates/resetPassword.handlebars"
+    "../templates/resetPassword.handlebars"
   );
   await passwordResetToken.deleteOne();
   return true;
