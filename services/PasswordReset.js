@@ -20,7 +20,7 @@ const requestPasswordReset = async (email) => {
     createdAt: Date.now(),
   }).save();
 
-  const link = `localhost://5000/passwordReset?token=${resetToken}&id=${user._id}`;
+  const link = `localhost:5000/passwordReset?token=${resetToken}&id=${user._id}`;
   sendEmail(
     user.email,
     "Password Reset Request",
