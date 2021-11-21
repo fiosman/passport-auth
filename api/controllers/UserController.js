@@ -4,6 +4,7 @@ const validateLoginInput = require("../../validations/Login");
 const validatePasswordInput = require("../../validations/ChangePassword");
 const jwtUtil = require("../../services/Jwt");
 const bcrypt = require("bcryptjs");
+
 const requestPasswordReset = require("../../services/PasswordReset").requestPasswordReset;
 const resetPassword = require("../../services/PasswordReset").resetPassword;
 
@@ -26,8 +27,6 @@ const createUser = async (req, res) => {
     newUser.passwordDigest = await bcrypt.hash(newUser.passwordDigest, salt);
     const savedUser = await newUser.save();
     if (savedUser) {
-      const jwt = jwtUtil.createToken(user);
-      res.cookie("jwt", jwt.token, { httpOnly: true, maxAge: jwt.expires });
       return res.json({
         userId: user._id,
         email: user.email,
@@ -58,11 +57,11 @@ const loginUser = (req, res) => {
           return res.status(401).json(errors);
         }
         if (isMatch) {
-          const jwt = jwtUtil.createToken(user);
-          res.cookie("jwt", jwt.token, { httpOnly: true, maxAge: jwt.expires });
+          const jwt = jwtUtil.createToken(user._id);
           return res.json({
             userId: user._id,
             email: user.email,
+            token: jwt.token,
           });
         } else {
           errors.push("Invalid credentials");
@@ -73,13 +72,16 @@ const loginUser = (req, res) => {
   });
 };
 
-const logoutUser = (req, res) => {
-  res.cookie("jwt", "", { maxAge: -1 });
-  res.json({ message: "You have been logged out" });
-};
-
 const getUserProfile = (req, res) => {
-  return res.json({ message: "This is the user profile" });
+  const currentToken = req.headers.authorization;
+  const refreshedToken = jwtUtil.refreshToken(req.headers.authorization);
+  // if (refreshedToken != undefined) {
+  //   console.log(refreshedToken);
+  // }
+  return res.json({
+    message: "This is the user profile",
+    token: refreshedToken != undefined ? refreshedToken.token : currentToken,
+  });
 };
 
 const changeUserPassword = async (req, res) => {
@@ -133,7 +135,6 @@ const resetPasswordController = async (req, res, next) => {
 module.exports = {
   createUser,
   loginUser,
-  logoutUser,
   getUserProfile,
   changeUserPassword,
   resetPasswordRequestController,
